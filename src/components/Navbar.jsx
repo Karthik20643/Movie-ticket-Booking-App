@@ -7,7 +7,7 @@ import { useClerk, UserButton, useUser } from '@clerk/clerk-react'
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { user } = useUser()
-  const { openSignIn, signOut } = useClerk()
+  const { openSignIn, signOut, openUserProfile } = useClerk()
   const [showProfileMenu, setShowProfileMenu] = useState(false)
 
   const profileButtonRef = useRef(null)
@@ -50,8 +50,8 @@ const Navbar = () => {
           <img src={assets.logo} alt="" className="w-36 h-auto" />
         </Link>
 
-        {/* desktop links only */}
-        <div className="hidden md:flex z-50 flex-row items-center justify-center gap-8 px-4 py-0 md:px-0 md:py-0">
+        {/* desktop links only (backdrop blur on md+) */}
+        <div className="hidden md:flex z-50 flex-row items-center justify-center gap-8 px-5 py-3 md:px-5.5 md:py-3 md:backdrop-blur md:bg-white/10 md:rounded-4xl md:border-0  md:border-gray-300/10 transition-colors">
           <XIcon className="md:hidden absolute top-6 right-6 w-6 h-6 cursor-pointer" onClick={() => setIsOpen(false)} />
           <Link to="/" onClick={() => { window.scrollTo(0, 0); setIsOpen(false); }}>Home</Link>
           <Link to="/MovieDetails" onClick={() => { window.scrollTo(0, 0); setIsOpen(false); }}>MovieDetails</Link>
@@ -99,6 +99,14 @@ const Navbar = () => {
                   >
                     My Bookings
                   </Link>
+
+                  <button
+                    onClick={() => { setShowProfileMenu(false); openUserProfile(); }}
+                    className="w-full text-left px-3 py-2 hover:bg-gray-100"
+                  >
+                    Manage account
+                  </button>
+
                   <button
                     onClick={() => { setShowProfileMenu(false); signOut(); }}
                     className="w-full text-left px-3 py-2 hover:bg-gray-100"
