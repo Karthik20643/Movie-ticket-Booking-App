@@ -15,16 +15,12 @@ const Navbar = () => {
         <img src={assets.logo} alt="" className="w-36 h-auto" />   
       </Link>
 
-      <div className={`max-md: absolute max-md: top-4 max-md: left-130 max-md: font-medium
-max-md: text-lg z-50 flex flex-col md:flex-row items-center
-max-md: justify-center gap-8 min-md:px-8 py-3 max-md:h-screen
-min-md: rounded-full backdrop-blur bg-black/70 md:bg-white/10 md:border
-border-gray-300/20 overflow-hidden transition-[width] duration-300 ${isopen ? 'max-md:w-full' : 'max-md:w-0'}`}>
-        <XIcon className='md:hidden absolute top-6 right-6 w-6 h-6 cursor-pointer'/>
-        <Link to='/'>Home</Link>
-        <Link to='/Moviedetails'>MovieDetails</Link>
-        <Link to='/Movies'>Movies</Link>
-        <Link to='/MyBookings'>MyBookings</Link>
+      <div className={`absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col md:flex-row items-center justify-center gap-8 px-4 py-3 md:px-0 md:py-0 bg-black/70 backdrop-blur md:bg-transparent rounded-md md:rounded-none border-gray-300/20 md:border-0 overflow-hidden transition-all duration-300 ${isopen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}>
+        <XIcon className='md:hidden absolute top-6 right-6 w-6 h-6 cursor-pointer' onClick={() => setisopen(prev => !prev)} />
+        <Link to='/' onClick={() => { window.scrollTo(0, 0); setisopen(false); }}>Home</Link>
+        <Link to='/Moviedetails' onClick={() => { window.scrollTo(0, 0); setisopen(false); }}>MovieDetails</Link>
+        <Link to='/Movies' onClick={() => { window.scrollTo(0, 0); setisopen(false); }}>Movies</Link>
+        <Link to='/MyBookings' onClick={() => { window.scrollTo(0, 0); setisopen(false); }}>MyBookings</Link>
       </div>
 
       <div className='flex items-center gap-8'>
@@ -34,7 +30,7 @@ hover: bg-primary-dull transition rounded-full font-medium
 cursor-pointer'>Login</button>
       
       </div> 
-      <MenuIcon className='max-md:ml-4 md:hidden w-8 h-8 cursor-pointer'/>
+      <MenuIcon className='max-md:ml-4 md:hidden w-8 h-8 cursor-pointer' onClick={() => setisopen(prev => !prev)} />
       </div>   
     </nav>
   )
