@@ -1,34 +1,53 @@
-import { ArrowBigRight, ArrowRight, Calendar1Icon, Clock10Icon } from 'lucide-react'
 import React from 'react'
+import { Calendar1Icon, Clock10Icon, ArrowRight } from 'lucide-react'
 import { assets } from '../assets/assets'
+
 const HeroSection = () => {
   return (
-   
-<div className="fixed inset-0 flex flex-col items-start justify-center gap-4 px-6 md:px-16 lg:px-35 bg-[url('/backgroundImage.png')] bg-cover bg-center bg-no-repeat overflow-hidden">
+    <section
+      id="hero"
+      className="relative w-full min-h-screen bg-top bg-no-repeat bg-cover"
+      style={{
+        backgroundImage: `url(${assets.backgroundImage ?? '/backgroundImage.png'})`,
+        backgroundPosition: 'top center',
+        backgroundSize: 'cover',
+      }}
+    >
+      {/* offset content by navbar height so hero bg starts at the exact top behind nav */}
+      <div className="max-w-7xl mx-auto px-6 md:px-16 lg:px-36 pt-16 md:pt-20 pb-16">
+        <img
+          src={assets.marvelLogo}
+          alt="logo"
+          className="w-auto max-w-xs md:max-w-sm h-auto object-contain mb-6"
+        />
 
+        <h1 className="text-5xl md:text-[70px] md:leading-tight font-bold max-w-3xl text-white">
+          Guardians <br /> of the Galaxy
+        </h1>
 
-<img src={assets.marvelLogo} alt="" className='max-h-15 lg:h-15 mt-20' />
-<h1 className='text-5xl md:text-[70px] md:leading-18 font-bold max-w-110'>Guradians <br />of the Galaxy</h1>
-      
-      <div className='flex items-center gap-7 text-gray-300'>
-        <span>action / drama / SciFi</span>
-        <div className='flex items-center gap-1'> 
-        <Calendar1Icon className='w-4.5 h-4.5'/>2018
-
+        <div className="flex items-center gap-6 text-gray-300 mt-4">
+          <span>Action | Adventure | Sci‑Fi</span>
+          <div className="flex items-center gap-2">
+            <Calendar1Icon className="w-4 h-4" /> 2018
+          </div>
+          <div className="flex items-center gap-2">
+            <Clock10Icon className="w-4 h-4" /> 2h 8m
+          </div>
         </div>
-        <div className='flex items-center gap-4'> 
-        <Clock10Icon className='w-4.5 h-4.5'/>2hr 3min
 
+        <p className="max-w-md text-gray-200 font-light mt-4">
+          In a post-apocalyptic world where cities ride on wheels and consume each other to survive...
+        </p>
+
+        <div className="mt-6">
+          <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md cursor-pointer">
+            Explore Movies
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
-      <p className='max-w-md text-gray-100 font-thin'> this is a super movie and its brought to you by kabali rajan</p>
-      <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md cursor-pointer">
-  <span>Explore Movies</span>
-  <ArrowRight className="w-4 h-4" />
-</button>
-      </div>
-       )
-  
+    </section>
+  )
 }
 
 export default HeroSection

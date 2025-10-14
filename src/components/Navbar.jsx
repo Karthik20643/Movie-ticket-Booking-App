@@ -44,14 +44,14 @@ const Navbar = () => {
   }, [showProfileMenu, isOpen])
 
   return (
-    <nav>
-      <div className="fixed top-0 left-0 z-50 w-full flex items-center justify-between px-6 md:px-16 lg:px-36 py-5">
+    <nav className="fixed top-0 left-0 z-50 w-full h-16 flex items-center justify-between px-6 md:px-16 lg:px-36 bg-transparent">
+      <div className="flex items-center justify-between w-full h-full ">
         <Link to="/" className="max-md:flex-1">
           <img src={assets.logo} alt="" className="w-36 h-auto" />
         </Link>
 
         {/* desktop links only (backdrop blur on md+) */}
-        <div className="hidden md:flex z-50 flex-row items-center justify-center gap-8 px-5 py-3 md:px-5.5 md:py-3 md:backdrop-blur md:bg-white/10 md:rounded-4xl md:border-0  md:border-gray-300/10 transition-colors">
+        <div className="hidden md:flex z-50 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex-row items-center justify-center gap-10 px-5 py-3 md:px-5.5 md:py-3 md:backdrop-blur md:bg-white/10 md:rounded-4xl md:border-0 md:border-gray-300/10 transition-colors">
           <XIcon className="md:hidden absolute top-6 right-6 w-6 h-6 cursor-pointer" onClick={() => setIsOpen(false)} />
           <Link to="/" onClick={() => { window.scrollTo(0, 0); setIsOpen(false); }}>Home</Link>
           <Link to="/MovieDetails" onClick={() => { window.scrollTo(0, 0); setIsOpen(false); }}>MovieDetails</Link>
@@ -59,7 +59,7 @@ const Navbar = () => {
           <Link to="/MyBookings" onClick={() => { window.scrollTo(0, 0); setIsOpen(false); }}>MyBookings</Link>
         </div>
 
-        <div className="flex items-center gap-8 relative">
+        <div className="flex items-center gap-10 relative">
           <SearchIcon className="max-md:hidden w-6 h-6 cursor-pointer" />
 
           {!user ? (

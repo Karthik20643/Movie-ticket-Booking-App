@@ -14,3 +14,8 @@ body{
   color: whitesmoke;
   background-color: #000000;
 }
+/* ensure page has no default gap */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
