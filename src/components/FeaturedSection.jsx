@@ -1,24 +1,49 @@
 import { ArrowRight } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
+import MovieCard from './MovieCard'
 
-const FeaturedSection = () => {
+const sample = new Array(8).fill(null).map((_, i) => ({
+  id: `demo-${i}`,
+  title: [
+    'In the Lost Lands',
+    'Until Dawn',
+    'Lilo & Stitch',
+    'Havoc',
+    'A Minecraft Movie',
+    'Mission: Impossible - The Final Reckoning',
+    'Thunderbolts',
+    'Guardians Reborn'
+  ][i % 8],
+  poster_path: '', // leave empty to use placeholder; replace with real urls if available
+  release_date: '2019-01-01',
+  genres: ['Action', 'Adventure'],
+}))
+
+const FeaturedSection = ({ movies }) => {
   const navigate = useNavigate()
   const [showCenterButton, setShowCenterButton] = useState(false)
+  const [list, setList] = useState(movies && movies.length ? movies : sample)
 
   useEffect(() => {
     const hero = document.getElementById('hero')
     if (!hero) return
-    const threshold = 80 // how far past hero to show the centered button
-    const onScroll = () => {
-      const heroBottom = hero.getBoundingClientRect().bottom + window.scrollY - window.innerHeight + 0
-      // show when we've scrolled slightly past hero bottom
-      setShowCenterButton(window.scrollY > hero.offsetTop + hero.offsetHeight - threshold)
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0]
+        setShowCenterButton(!entry.isIntersecting)
+      },
+      { root: null, threshold: 0, rootMargin: '-80px 0px 0px 0px' }
+    )
+
+    observer.observe(hero)
+    return () => observer.disconnect()
   }, [])
+
+  useEffect(() => {
+    if (movies && movies.length) setList(movies)
+  }, [movies])
 
   return (
     <section className="px-6 md:px-16 lg:px-24 xl:px-44 overflow-visible relative z-10">
@@ -36,8 +61,15 @@ const FeaturedSection = () => {
         </button>
       </div>
 
+      {/* cards grid */}
+      <div className="mt-8 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        {list.map((m) => (
+          <MovieCard key={m.id ?? m._id} movie={m} />
+        ))}
+      </div>
+
       {/* centered "View more" button that appears only after scrolling a little past the hero */}
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center mt-8">
         <div className="-mt-12 md:-mt-20 w-full flex justify-center">
           <button
             onClick={() => navigate('/movies')}
@@ -47,6 +79,15 @@ const FeaturedSection = () => {
           >
             View more
             <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="flex justify-center mt-10">
+          <button
+            onClick={() => navigate('/moviedetails')}
+            className="px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer"
+          >
+            Show more
           </button>
         </div>
       </div>
