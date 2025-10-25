@@ -2,28 +2,18 @@ import { ArrowRight } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import MovieCard from './MovieCard'
-
-const sample = new Array(8).fill(null).map((_, i) => ({
-  id: `demo-${i}`,
-  title: [
-    'In the Lost Lands',
-    'Until Dawn',
-    'Lilo & Stitch',
-    'Havoc',
-    'A Minecraft Movie',
-    'Mission: Impossible - The Final Reckoning',
-    'Thunderbolts',
-    'Guardians Reborn'
-  ][i % 8],
-  poster_path: '', // leave empty to use placeholder; replace with real urls if available
-  release_date: '2019-01-01',
-  genres: ['Action', 'Adventure'],
-}))
+import { dummyShowsData } from '../assets/assets'
 
 const FeaturedSection = ({ movies }) => {
   const navigate = useNavigate()
   const [showCenterButton, setShowCenterButton] = useState(false)
-  const [list, setList] = useState(movies && movies.length ? movies : sample)
+
+  // use passed movies if available, otherwise use movies from assets/dummyShowsData
+  const [list, setList] = useState((movies && movies.length) ? movies : dummyShowsData.slice(0, 8))
+
+  useEffect(() => {
+    if (movies && movies.length) setList(movies)
+  }, [movies])
 
   useEffect(() => {
     const hero = document.getElementById('hero')
@@ -40,10 +30,6 @@ const FeaturedSection = ({ movies }) => {
     observer.observe(hero)
     return () => observer.disconnect()
   }, [])
-
-  useEffect(() => {
-    if (movies && movies.length) setList(movies)
-  }, [movies])
 
   return (
     <section className="px-6 md:px-16 lg:px-24 xl:px-44 overflow-visible relative z-10">
