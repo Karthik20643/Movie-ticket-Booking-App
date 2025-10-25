@@ -57,21 +57,21 @@ const FeaturedSection = ({ movies }) => {
       {/* centered "View more" button that appears only after scrolling a little past the hero */}
       <div className="flex flex-col items-center mt-8">
         <div className="-mt-12 md:-mt-20 w-full flex justify-center">
-          <button
-            onClick={() => navigate('/movies')}
-            aria-label="View more movies"
-            className={`flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full shadow-lg transition-transform duration-300 transform
-              ${showCenterButton ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-6 pointer-events-none'}`}
-          >
-            View more
-            <ArrowRight className="w-4 h-4" />
-          </button>
+            {/* <button
+              onClick={() => navigate('/movies')}
+              aria-label="View more movies"
+              className={`flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full shadow-lg transition-transform duration-300 transform
+                ${showCenterButton ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-6 pointer-events-none'}`}
+            >
+              View more
+              <ArrowRight className="w-4 h-4" />
+            </button> */}
         </div>
 
         <div className="flex justify-center mt-10">
           <button
             onClick={() => navigate('/moviedetails')}
-            className="px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer"
+            className="px-10 py-3.5 m-5  text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer"
           >
             Show more
           </button>
