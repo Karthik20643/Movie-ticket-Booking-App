@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets'
+import { Star } from 'lucide-react'
 
 const PLACEHOLDER = assets?.screenImage || '/placeholder-poster.jpg'
 const TMDB_BASE = 'https://image.tmdb.org/t/p/w500'
@@ -23,17 +24,26 @@ const MovieCard = ({ movie }) => {
   const year = (m.release_date || m.year || '').toString().slice(0, 4) || '—'
   const genres = Array.isArray(m.genres) ? m.genres.slice(0, 2).map(g => g.name || g).join(', ') : ''
 
-  // common runtime fields: runtime, duration, length, runtimeMinutes, runtime_minutes, run_time
+  // runtime fields
   const minutes = m.runtime ?? m.duration ?? m.length ?? m.runtimeMinutes ?? m.runtime_minutes ?? m.run_time ?? m.runTime ?? 0
   const timeStr = formatMinutes(minutes)
 
   const imagePath = (m.poster_path || m.backdrop_path || m.poster || m.backdrop || '').toString()
   const imageUrl = imagePath ? (imagePath.startsWith('http') ? imagePath : `${TMDB_BASE}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`) : PLACEHOLDER
 
+  // rating fallback (fixed syntax error)
+  const ratingRaw = m.vote_average ?? m.rating ?? m.score ?? 0
+  const rating = typeof ratingRaw === 'number'
+    ? (Math.round(ratingRaw * 10) / 10).toString()
+    : String(ratingRaw).slice(0, 3)
+
   return (
-    <article className="rounded-2xl overflow-hidden bg-gradient-to-b from-zinc-900 to-zinc-800 shadow-xl w-full">
+    <article
+      className="rounded-2xl overflow-hidden bg-gradient-to-b from-zinc-900 to-zinc-800 shadow-xl w-full transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl will-change-transform"
+      aria-hidden="false"
+    >
       <Link to={`/MovieDetails/${id}`} className="block">
-        <div className="w-full h-44 md:h-48 bg-gray-800 relative">
+        <div className="w-full h-40 md:h-48 bg-gray-800 relative">
           <img
             src={imageUrl}
             alt={title}
@@ -55,14 +65,16 @@ const MovieCard = ({ movie }) => {
 
         <div className="flex items-center justify-between">
           <button
+            type="button"
             onClick={() => navigate(`/MovieDetails/${id}`)}
-            className="px-4 py-2 bg-primary text-white text-sm rounded-full shadow-md hover:brightness-95 transition"
+            className="px-4 py-2 bg-primary text-white text-sm rounded-full shadow-md hover:brightness-95 active:scale-95 active:shadow-sm transition cursor-pointer"
           >
             Buy Ticket
           </button>
 
           <div className="flex items-center gap-2 text-sm text-gray-300">
-            <span className="font-medium">4.5</span>
+            <Star className="w-4 h-4 text-red-400" aria-hidden="true" />
+            <span className="font-medium">{rating}</span>
           </div>
         </div>
       </div>
