@@ -1,52 +1,113 @@
-import React from 'react'
-import { Play } from 'lucide-react'
-import { dummyTrailers } from '../assets/assets'
+import React, { useEffect, useState } from 'react'
+import { dummyTrailers, assets } from '../assets/assets'
+import ReactPlayer from 'react-player'
 
-const TrailerSection = ({ trailers = [] }) => {
-  const list = (trailers && trailers.length) ? trailers : dummyTrailers
+const PLACEHOLDER = assets?.screenImage || '/placeholder-poster.jpg'
+
+function normalizeImage(src) {
+  if (!src) return PLACEHOLDER
+  if (src.startsWith('http') || src.startsWith('/')) return src
+  return `${process.env.PUBLIC_URL}/${src}`
+}
+
+const TrailerSection = () => {
+  const [currentTrailer, setCurrentTrailer] = useState(null)
+  const [showPlayer, setShowPlayer] = useState(false)
+
+  useEffect(() => {
+    if (!Array.isArray(dummyTrailers) || dummyTrailers.length === 0) {
+      setCurrentTrailer(null)
+      return
+    }
+
+    const candidate = dummyTrailers.find(t => Boolean(t.videoUrl || t.url || t.src)) ?? dummyTrailers[0]
+    const url = candidate?.videoUrl ?? candidate?.url ?? candidate?.src ?? ''
+    setCurrentTrailer({ ...candidate, resolvedUrl: url })
+  }, [])
+
+  if (!currentTrailer) {
+    return (
+      <div className="px-6 md:px-16 lg:px-24">
+        <p className="text-gray-400">No trailer available. Check console for debug logs.</p>
+      </div>
+    )
+  }
+
+  const thumb = currentTrailer.image || currentTrailer.thumbnail || currentTrailer.poster || ''
+  const thumbUrl = normalizeImage(thumb)
+  const url = currentTrailer.resolvedUrl || ''
 
   return (
-    <section className="trailer-section px-6 md:px-16 lg:px-24 xl:px-44 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-white text-lg font-semibold">Trailers</h2>
-      </div>
+    <div className="px-6 md:px-16 lg:px-24">
+      <p className="text-white mb-2">Trailers</p>
+      <p className="text-xs text-gray-400 mb-4 break-all">Using: {url || '(no url)'}</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {list.length ? (
-          list.map((t, i) => (
-            <a
-              key={t.videoUrl ?? t.image ?? i}
-              href={t.videoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group rounded-lg overflow-hidden bg-zinc-900 block"
-              aria-label={`Open trailer: ${t.title ?? `Trailer ${i + 1}`}`}
-            >
-              <div className="relative w-full h-44 md:h-48 bg-gray-800">
-                <img
-                  src={t.image}
-                  alt={t.title ?? `Trailer ${i + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="flex items-center justify-center w-14 h-14 rounded-full bg-black/50 text-white opacity-95 transition-transform duration-200 group-hover:scale-110">
-                    <Play className="w-6 h-6" />
-                  </div>
-                </div>
+      <div className="relative">
+        {/* preview / player */}
+        {!showPlayer && thumbUrl ? (
+          <div
+            className="relative w-full h-60 md:h-96 bg-gray-800 cursor-pointer overflow-hidden rounded"
+            onClick={() => setShowPlayer(true)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter') setShowPlayer(true) }}
+          >
+            <img
+              src={thumbUrl}
+              alt={currentTrailer.title || 'trailer thumbnail'}
+              className="w-full h-full object-cover"
+              onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = PLACEHOLDER }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-16 h-16 bg-black/60 rounded-full flex items-center justify-center text-white text-lg">
+                ▶
               </div>
-
-              <div className="p-3">
-                {t.title && <h3 className="text-sm text-white font-medium truncate">{t.title}</h3>}
-                {t.channel && <p className="text-xs text-gray-400 mt-1">{t.channel}</p>}
-              </div>
-            </a>
-          ))
+            </div>
+          </div>
         ) : (
-          <p className="text-gray-400">No trailers available</p>
+          <div className="w-full" style={{ height: 360 }}>
+            <ReactPlayer
+              url={url}
+              controls
+              width="100%"
+              height="100%"
+              config={{
+                file: {
+                  attributes: {
+                    poster: thumbUrl || undefined
+                  }
+                }
+              }}
+            />
+          </div>
         )}
       </div>
-    </section>
+
+      {/* thumbnails grid below player - thumbnails now normalized and have hover effect */}
+      <div className="grid grid-cols-4 md:gap-8 gap-4 mt-8 max-w-3xl mx-auto">
+        {dummyTrailers.map((trailer, idx) => {
+          const resolved = trailer.videoUrl ?? trailer.url ?? trailer.src ?? ''
+          const image = normalizeImage(trailer.image || trailer.thumbnail || trailer.poster)
+          return (
+            <div
+              key={trailer.id ?? idx}
+              className="cursor-pointer overflow-hidden rounded-lg transform transition-transform duration-200 hover:scale-105 hover:brightness-110"
+              onClick={() => {
+                setCurrentTrailer({ ...trailer, resolvedUrl: resolved })
+                setShowPlayer(true)
+              }}
+            >
+              <img
+                src={image}
+                alt={trailer.title ?? `Trailer ${idx + 1}`}
+                className="rounded-lg w-full h-20 md:h-24 object-cover"
+                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = PLACEHOLDER }}
+              />
+            </div>
+          )
+        })}
+      </div>
+    </div>
   )
 }
 
