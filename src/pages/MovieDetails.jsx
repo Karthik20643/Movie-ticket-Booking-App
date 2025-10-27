@@ -1,11 +1,19 @@
 // ...existing code...
 import React from 'react'
-
+import MovieCard from '../components/MovieCard'
+import { dummyShowsData } from '../assets/assets'
 const MovieDetails = () => {    
   return (
-    <nav>
+    <div>
         <p>moviedetails</p>
-    </nav>
+        
+<div >
+  {dummyShowsData.map((movie)=>(
+            <MovieCard movie = {movie} key={movie._id} />
+
+  ))}
+  
+  </div>   </div>
   )
 }
 
