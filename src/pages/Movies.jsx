@@ -18,7 +18,7 @@ const Movies = () => {
 
       {/* Now showing + cards below (full width of container) */}
       <section className="mt-8">
-        <h1 className="text-lg font-medium mb-4">Now showing</h1>
+        <h1 className="text-lg font-medium mb-4">Your Movies</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {dummyShowsData.map((movie) => (
@@ -26,7 +26,7 @@ const Movies = () => {
           ))}
         </div>
       </section>
-    </div>
+    </div>  
   ) : (
     <div className="text-lg font-medium mb-4" No shows currently available/>
   )
