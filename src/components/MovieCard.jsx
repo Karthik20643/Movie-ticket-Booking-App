@@ -42,7 +42,7 @@ const MovieCard = ({ movie }) => {
       className="rounded-2xl overflow-hidden bg-gradient-to-b from-zinc-900 to-zinc-800 shadow-xl w-full transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl will-change-transform"
       aria-hidden="false"
     >
-      <Link to={`/MovieDetails/${id}`} className="block">
+      <Link to={`/moviedetails/${id}`} className="block">
         <div className="w-full h-40 md:h-48 bg-gray-800 relative">
           <img
             src={imageUrl}
@@ -66,7 +66,7 @@ const MovieCard = ({ movie }) => {
         <div className="flex items-center justify-between">
           <button
             type="button"
-            onClick={() => navigate(`/MovieDetails/${id}`)}
+            onClick={() => navigate(`/moviedetails/${id}`)}
             className="px-4 py-2 bg-primary text-white text-sm rounded-full shadow-md hover:brightness-95 active:scale-95 active:shadow-sm transition cursor-pointer"
           >
             Buy Ticket

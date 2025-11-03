@@ -3,45 +3,56 @@ import { useParams } from 'react-router-dom'
 import MovieCard from '../components/MovieCard'
 import { dummyDateTimeData, dummyShowsData } from '../assets/assets'
 
+function timeFormat(mins) {
+  if (mins === null || mins === undefined || Number.isNaN(Number(mins))) return ''
+  const m = Math.max(0, Math.floor(Number(mins)))
+  const h = Math.floor(m / 60)
+  const r = m % 60
+  return `${h > 0 ? h + 'h' : ''}${h > 0 && r > 0 ? ' ' : ''}${r > 0 ? r + 'm' : ''}`.trim()
+}
+
 const MovieDetails = () => {
   const { id } = useParams()
-  const [show, setshow] = useState(null)
-
-  const getshow = () => {
-    const found = dummyShowsData.find(
-      s => String(s.id) === String(id) || String(s._id) === String(id)
-    )
-    setshow({
-      movie: found ?? null,
-      date_time: dummyDateTimeData
-    })
-  }
+  const [show, setShow] = useState(null)
 
   useEffect(() => {
-    getshow()
+    const found = dummyShowsData.find(
+      (s) => String(s.id) === String(id) || String(s._id) === String(id)
+    )
+    setShow(found ? { movie: found, date_time: dummyDateTimeData } : null)
   }, [id])
 
-  if (!show || !show.movie) return <div className="">loading ...</div>
+  if (!show || !show.movie) return <div className="p-6 text-gray-400">loading ...</div>
+
+  const m = show.movie
+  const year = (m.release_date || '').slice(0, 4) || '—'
+  const genres = Array.isArray(m.genres) ? m.genres.map(g => g.name || g).join(', ') : ''
+  const runtime = timeFormat(m.runtime)
 
   return (
-    <div className="">
-      <div className="">{/* header / poster area */}</div>
+    <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="md:w-1/3">
+          <MovieCard movie={m} />
+        </div>
 
-      <div className="">
-        {typeof show.movie.vote_average === 'number'
-          ? `${show.movie.vote_average.toFixed(1)} user_rating`
-          : '— user_rating'}
-      </div>
+        <div className="md:w-2/3 text-white">
+          <h1 className="text-2xl font-bold mb-2">{m.title || m.name}</h1>
+          <p className="text-sm text-gray-400 mb-3">{year}{genres ? ` · ${genres}` : ''}{runtime ? ` · ${runtime}` : ''}</p>
+          <p className="text-gray-300 leading-relaxed">{m.overview}</p>
 
-      <p className="text-gray-400 mt-2 text-sm leading-tight max-w-x1">
-        {show.movie.overview}
-      </p>
-      <p>{timeFormat(show.movie.runtime)}</p>
-
-      <div>
-        {dummyShowsData.map((movie) => (
-          <MovieCard movie={movie} key={movie._id} />
-        ))}
+          <div className="mt-6">
+            <h3 className="text-lg font-medium mb-2">Showtimes</h3>
+            <pre className="text-sm text-gray-400">{
+              // safe access: if date_time is an array use [0], otherwise show the whole object
+              JSON.stringify(
+                Array.isArray(show.date_time) ? (show.date_time[0] ?? {}) : (show.date_time ?? {}),
+                null,
+                2
+              )
+            }</pre>
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -15,12 +15,8 @@ const App = () => {
      { !isadminpage &&  <Navbar /> }
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/Movies" element={<Movies />} />
-                <Route path="/MovieDetails/:id" element={<MovieDetails />} />
-                <Route path="/MovieDetails/:id/:date" element={<SeatLayout />} />
-                      <Route path="/Favourite" element={<Favourite />} />
-                      <Route path="/MyBookings" element={<MyBookings />} />
-
+        <Route path="/movies" element={<Movies />} />
+        <Route path="/moviedetails/:id" element={<MovieDetails />} />
       </Routes>
                         {  !isadminpage  &&  <Footer /> }
 
