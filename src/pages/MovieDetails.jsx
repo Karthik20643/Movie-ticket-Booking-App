@@ -19,6 +19,7 @@ const MovieDetails = () => {
     const found = dummyShowsData.find(
       (s) => String(s.id) === String(id) || String(s._id) === String(id)
     )
+    console.debug('MovieDetails: found movie=', found, 'raw date_time=', dummyDateTimeData)
     setShow(found ? { movie: found, date_time: dummyDateTimeData } : null)
   }, [id])
 
@@ -42,15 +43,35 @@ const MovieDetails = () => {
           <p className="text-gray-300 leading-relaxed">{m.overview}</p>
 
           <div className="mt-6">
-            <h3 className="text-lg font-medium mb-2">Showtimes</h3>
-            <pre className="text-sm text-gray-400">{
-              // safe access: if date_time is an array use [0], otherwise show the whole object
-              JSON.stringify(
-                Array.isArray(show.date_time) ? (show.date_time[0] ?? {}) : (show.date_time ?? {}),
-                null,
-                2
+            {/* <h3 className="text-lg font-medium mb-2">Showtimes</h3> */}
+            {(() => {
+              const showId = String(m._id ?? m.id ?? '')
+              const times = Array.isArray(show.date_time)
+                ? show.date_time.filter(t => {
+                    const candidate = String(t.showId ?? t.movieId ?? t.id ?? t.show_id ?? '')
+                    return candidate === showId
+                  })
+                : []
+
+              // if (times.length === 0) {
+              //   return <div className="text-sm text-gray-400">No showtimes found for this movie.</div>
+              // }
+
+              return (
+                <ul className="text-sm text-gray-400 list-disc pl-5">
+                  {times.map((t, i) => {
+                    const timeVal = t.time ?? t.start ?? t.showTime ?? t.time_str ?? ''
+                    const note = t.note ?? t.desc ?? t.description ?? ''
+                    return (
+                      <li key={i} className="mb-1">
+                        <span className="font-medium text-white">{timeVal || JSON.stringify(t)}</span>
+                        {note ? <span className="text-gray-400 ml-2">— {note}</span> : null}
+                      </li>
+                    )
+                  })}
+                </ul>
               )
-            }</pre>
+            })()}
           </div>
         </div>
       </div>
