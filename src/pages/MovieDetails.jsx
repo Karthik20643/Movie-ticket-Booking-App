@@ -31,7 +31,7 @@ const MovieDetails = () => {
   const runtime = timeFormat(m.runtime)
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8">
+    <div className="max-w-4xl mx-auto px-6 py-8 pt-24 md:pt-28">
       <div className="flex flex-col md:flex-row gap-6">
         <div className="md:w-1/3">
           <MovieCard movie={m} />
@@ -44,7 +44,7 @@ const MovieDetails = () => {
 
           <div className="mt-6">
             {/* <h3 className="text-lg font-medium mb-2">Showtimes</h3> */}
-            {(() => {
+            {(() => { 
               const showId = String(m._id ?? m.id ?? '')
               const times = Array.isArray(show.date_time)
                 ? show.date_time.filter(t => {
