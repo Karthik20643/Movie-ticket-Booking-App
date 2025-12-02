@@ -96,11 +96,26 @@ const MovieDetails = () => {
                 aria-label="Add to favorites"
                 className="p-2 rounded-full bg-primary hover:bg-primary-dull transition shadow-sm"
               >
-                <Heart className="w-5 h-5 text-white" />
+                <Heart className="w-5 h-8 text-white" />
               </button>
             </div>
             <div>
-              <a href="">Your Favourite Cast</a>
+              <h4 className="text-white font-medium mb-2">Your Favourite Cast</h4>
+              <div className="overflow-x-auto no-scrollbar mt-8 pb-4">
+                <div className="flex items-center gap-8 w-max px-4">
+                  {(show.movie.casts || []).slice(0, 10).map((cast, index) => (
+                    <div key={index} className="flex flex-col items-center text-center min-w-[72px]">
+                      <img
+                        src={cast.profile_path || '/placeholder-poster.jpg'}
+                        alt={cast.name || ''}
+                        className="rounded-full h-20 w-20 object-cover"
+                        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/placeholder-poster.jpg' }}
+                      />
+                      <p className="text-sm text-white mt-2">{cast.name}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
