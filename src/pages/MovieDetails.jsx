@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import MovieCard from '../components/MovieCard'
+import DateSelect from '../components/dateselect'
 import { dummyDateTimeData, dummyShowsData } from '../assets/assets'
 import { Heart, PlayCircleIcon } from 'lucide-react'
 
@@ -29,7 +30,19 @@ const MovieDetails = () => {
   const m = show.movie
   const year = (m.release_date || '').slice(0, 4) || '—'
   const genres = Array.isArray(m.genres) ? m.genres.map(g => g.name || g).join(', ') : ''
-  const runtime = timeFormat(m.runtime)
+  const runtime = timeFormat ? timeFormat(m.runtime) : ''
+
+  // compute showId and showTimes once and use below
+  const showId = String(m._id ?? m.id ?? '')
+  const showTimes = Array.isArray(show.date_time)
+    ? show.date_time.filter(t => {
+        const candidate = String(t.showId ?? t.movieId ?? t.id ?? t.show_id ?? t.movie_id ?? '')
+        return candidate === showId
+      })
+    : []
+
+  // debug — inspect what's actually in date_time and why filter may be empty
+  console.debug('MovieDetails showId:', showId, 'filtered showTimes:', showTimes, 'raw date_time:', show.date_time)
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-8 pt-24 md:pt-28">
@@ -44,30 +57,16 @@ const MovieDetails = () => {
           <p className="text-gray-300 leading-relaxed">{m.overview}</p>
 
           <div className="mt-6">
-            {(() => {
-              const showId = String(m._id ?? m.id ?? '')
-              const times = Array.isArray(show.date_time)
-                ? show.date_time.filter(t => {
-                    const candidate = String(t.showId ?? t.movieId ?? t.id ?? t.show_id ?? '')
-                    return candidate === showId
-                  })
-                : []
-
-              return (
-                <ul className="text-sm text-gray-400 list-disc pl-5">
-                  {times.map((t, i) => {
-                    const timeVal = t.time ?? t.start ?? t.showTime ?? t.time_str ?? ''
-                    const note = t.note ?? t.desc ?? t.description ?? ''
-                    return (
-                      <li key={i} className="mb-1">
-                        <span className="font-medium text-white">{timeVal || JSON.stringify(t)}</span>
-                        {note ? <span className="text-gray-400 ml-2">— {note}</span> : null}
-                      </li>
-                    )
-                  })}
-                </ul>
-              )
-            })()}
+            {/* mounted DateSelect - shows only times for this movie; handle selection via onSelect */}
+            <DateSelect
+              // while debugging, fall back to raw list so the selector renders and you can inspect items
+              dateTime={showTimes.length ? showTimes : (Array.isArray(show.date_time) ? show.date_time : [])}
+               id={showId}
+               onSelect={(selected) => {
+                 console.debug('selected date/time:', selected)
+                 // add handler logic here (e.g. set local state or open booking modal)
+               }}
+             />
 
             {/* action buttons */}
             <div className="mt-4 flex items-center gap-3">
@@ -98,7 +97,7 @@ const MovieDetails = () => {
               >
                 <Heart className="w-5 h-8 text-white" />
               </button>
-            </div>
+            </div>  
             <div>
               <h4 className="text-white font-medium mb-2">Your Favourite Cast</h4>
               <div className="overflow-x-auto no-scrollbar mt-8 pb-4">
