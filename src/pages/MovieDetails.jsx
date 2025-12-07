@@ -17,11 +17,13 @@ const MovieDetails = () => {
   const { id } = useParams()
   const [show, setShow] = useState(null)
 
+  // add lifted state to keep selected date/time
+  const [selectedDate, setSelectedDate] = useState(null)
+
   useEffect(() => {
     const found = dummyShowsData.find(
       (s) => String(s.id) === String(id) || String(s._id) === String(id)
     )
-    console.debug('MovieDetails: route id=', id, 'found=', found, 'raw date_time=', dummyDateTimeData)
     setShow(found ? { movie: found, date_time: dummyDateTimeData } : null)
   }, [id])
 
@@ -40,8 +42,6 @@ const MovieDetails = () => {
         return candidate === showId
       })
     : []
-
-  console.debug('MovieDetails: showId=', showId, 'showTimes=', showTimes)
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-8 pt-24 md:pt-28">
@@ -62,9 +62,28 @@ const MovieDetails = () => {
               id={showId}
               onSelect={(selected) => {
                 console.debug('selected date/time:', selected)
-                // add handler logic here (e.g. set local state or open booking modal)
+                setSelectedDate(selected)   // <-- store selection
               }}
             />
+
+            {/* show selected-date details */}
+            <div className="mt-3">
+              {selectedDate ? (
+                <>
+                  <div className="text-sm text-gray-400">Selected</div>
+                  <div className="text-white font-medium">
+                    {selectedDate.time ?? selectedDate.start ?? selectedDate.label ?? String(selectedDate)}
+                  </div>
+                  { (selectedDate.note ?? selectedDate.desc ?? selectedDate.description) && (
+                    <div className="text-gray-400 text-sm mt-1">
+                      {selectedDate.note ?? selectedDate.desc ?? selectedDate.description}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-sm text-gray-400">Please select a date/time</div>
+              )}
+            </div>
 
             {/* action buttons */}
             <div className="mt-4 flex items-center gap-3">
