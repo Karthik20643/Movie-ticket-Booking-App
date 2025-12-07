@@ -21,7 +21,7 @@ const MovieDetails = () => {
     const found = dummyShowsData.find(
       (s) => String(s.id) === String(id) || String(s._id) === String(id)
     )
-    console.debug('MovieDetails: found movie=', found, 'raw date_time=', dummyDateTimeData)
+    console.debug('MovieDetails: route id=', id, 'found=', found, 'raw date_time=', dummyDateTimeData)
     setShow(found ? { movie: found, date_time: dummyDateTimeData } : null)
   }, [id])
 
@@ -41,8 +41,7 @@ const MovieDetails = () => {
       })
     : []
 
-  // debug — inspect what's actually in date_time and why filter may be empty
-  console.debug('MovieDetails showId:', showId, 'filtered showTimes:', showTimes, 'raw date_time:', show.date_time)
+  console.debug('MovieDetails: showId=', showId, 'showTimes=', showTimes)
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-8 pt-24 md:pt-28">
@@ -59,14 +58,13 @@ const MovieDetails = () => {
           <div className="mt-6">
             {/* mounted DateSelect - shows only times for this movie; handle selection via onSelect */}
             <DateSelect
-              // while debugging, fall back to raw list so the selector renders and you can inspect items
-              dateTime={showTimes.length ? showTimes : (Array.isArray(show.date_time) ? show.date_time : [])}
-               id={showId}
-               onSelect={(selected) => {
-                 console.debug('selected date/time:', selected)
-                 // add handler logic here (e.g. set local state or open booking modal)
-               }}
-             />
+              dateTime={showTimes}
+              id={showId}
+              onSelect={(selected) => {
+                console.debug('selected date/time:', selected)
+                // add handler logic here (e.g. set local state or open booking modal)
+              }}
+            />
 
             {/* action buttons */}
             <div className="mt-4 flex items-center gap-3">
