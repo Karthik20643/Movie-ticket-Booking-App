@@ -30,11 +30,19 @@ return show ? (
     </div>
     <div>
       {show.dateTime[date].map((item) => (
-        <div className='flex items-center gap-2 px-6 py-2 w-max rounded-r-md cursor-pointer transition'>
+        <div key={item.time} onClick={()=>setSelectedTime(item)} className='flex items-center gap-2 px-6 py-2 w-max rounded-r-md cursor-pointer transition'>
           <ClockIcon className='w-4 h-4'/>
           <p className='text-sm'>{ isoTimeFormat( item.time)}</p>
         </div>
       ))}
+      <div className='relative flex-1 flex flex-col items-center max-md : mt-16'>
+
+        <BlurCircle top="-100px" left="-100px"/>
+        <BlurCircle bottom="0px" right="0px"/>
+        <h1 className='text-2x1 font-semibold mb-4'>Select your seat</h1>
+<img src={assets. screenImage} alt="screen" />
+<p className='text-gray-400 text-sm mb-6' >SCREEN SIDE</p>
+      </div>
     </div>
   </div>
 ) : (<Loading/>)
