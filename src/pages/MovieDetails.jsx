@@ -17,14 +17,6 @@ function timeFormat(mins) {
 const MovieDetails = () => {
   const { id } = useParams()
   const [show, setShow] = useState(null)
-  // if(show){
-  //   setShow({
-  //     movie : show,      // wraps the entire show object as "movie"
-  //     dateTime:dummyDateTimeData
-  //   })
-  // }
-
-
   // add lifted state to keep selected date/time
   const [selectedDate, setSelectedDate] = useState(null)
 
