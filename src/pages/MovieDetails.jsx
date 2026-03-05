@@ -4,6 +4,7 @@ import MovieCard from '../components/MovieCard'
 import DateSelect from '../components/dateselect'
 import { dummyDateTimeData, dummyShowsData } from '../assets/assets'
 import { Heart, PlayCircleIcon } from 'lucide-react'
+import Loading from '../components/Loading'
 
 function timeFormat(mins) {
   if (mins === null || mins === undefined || Number.isNaN(Number(mins))) return ''
@@ -16,6 +17,13 @@ function timeFormat(mins) {
 const MovieDetails = () => {
   const { id } = useParams()
   const [show, setShow] = useState(null)
+  // if(show){
+  //   setShow({
+  //     movie : show,      // wraps the entire show object as "movie"
+  //     dateTime:dummyDateTimeData
+  //   })
+  // }
+
 
   // add lifted state to keep selected date/time
   const [selectedDate, setSelectedDate] = useState(null)
@@ -27,7 +35,7 @@ const MovieDetails = () => {
     setShow(found ? { movie: found, date_time: dummyDateTimeData } : null)
   }, [id])
 
-  if (!show || !show.movie) return <div className="p-6 text-gray-400">loading ...</div>
+  if (!show || !show.movie) return <Loading></Loading>
 
   const m = show.movie
   const year = (m.release_date || '').slice(0, 4) || '—'
