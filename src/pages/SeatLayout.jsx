@@ -7,6 +7,7 @@ import { ClockIcon } from 'lucide-react'
 import isoTimeFormat from '../lib/isoTimeFormat'
 
 const SeatLayout = () => {
+    const groupRows  = [["A, B"],["C","D"],["E","F"],["G","H"],]
 
 const { id, date } = useParams()
 const [selectedSeats, setSelectedSeats] = useState([])
@@ -20,7 +21,9 @@ const getShow = async () => {
     if (foundShow) { setShow({ movie: foundShow, dateTime: dummyDateTimeData }) }
 }
 
+
 const handleSeatClick = (seatId) => {
+    
     setSelectedSeats(prev =>
         prev.includes(seatId) ? prev.filter(s => s !== seatId) : [...prev, seatId]
     )
