@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { dummyBookingData } from '../assets/assets'
+import { dateFormat } from '../lib/dateformat'
 
 const MyBookings = () => {
   const currency = import.meta.env.VITE_CURRENCY || 'USD'
@@ -19,6 +20,11 @@ const MyBookings = () => {
   }, [])
 
   const { state } = useLocation()
+  const navigate = useNavigate()
+
+  const goToCheckout = (payload) => {
+    navigate('/checkout', { state: payload })
+  }
 
   const formatCurrency = (amt) => {
     try {
@@ -45,6 +51,9 @@ const MyBookings = () => {
             {Array.isArray(state.seats) && state.seats.map((s) => (
               <span key={s} className="px-3 py-1 bg-primary text-black rounded">{s}</span>
             ))}
+          </div>
+          <div className="mt-4">
+            <button onClick={() => goToCheckout({ movie: state.movie, showId: state.showId, date: state.date, time: state.time, seats: state.seats })} className="px-4 py-2 bg-primary text-black rounded">Pay Now</button>
           </div>
         </div>
       ) : (
@@ -73,6 +82,11 @@ const MyBookings = () => {
               <div className="text-right">
                 <div className="font-semibold">{formatCurrency(item.amount ?? 0)}</div>
                 <div className={`text-sm mt-1 ${item.isPaid ? 'text-green-400' : 'text-yellow-300'}`}>{item.isPaid ? 'Paid' : 'Pending'}</div>
+                {!item.isPaid && (
+                  <div className="mt-3">
+                    <button onClick={() => goToCheckout({ movie: item.show.movie, showId: item.show._id ?? item.show.movie._id, date: item.show.showDateTime, time: { time: item.show.showDateTime }, seats: item.bookedSeats, amount: item.amount })} className="px-3 py-1 mt-2 bg-primary text-black rounded text-sm">Pay Now</button>
+                  </div>
+                )}
               </div>
             </div>
           ))}
