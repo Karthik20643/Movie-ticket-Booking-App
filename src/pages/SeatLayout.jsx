@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { assets, dummyDateTimeData, dummyShowsData } from '../assets/assets'
 import Loading from '../components/Loading'
 import BlurCircle from '../components/BlurCircle'
@@ -24,6 +24,7 @@ const seatBaseClass = 'h-8 w-8 rounded-md border border-primary/60 text-xs trans
 
 const SeatLayout = () => {
   const { id, date } = useParams()
+  const navigate = useNavigate()
   const [selectedSeats, setSelectedSeats] = useState([])
   const [selectedTime, setSelectedTime] = useState(null)
   const [show, setShow] = useState(null)
@@ -99,6 +100,21 @@ const SeatLayout = () => {
   const decodedDate = date ? decodeURIComponent(date) : null
   const timings = decodedDate ? (show.dateTime?.[decodedDate] || []) : []
 
+  const handleProceed = () => {
+    if (!selectedTime || selectedSeats.length === 0) return
+    const showId = show?.movie?._id ?? show?.movie?.id ?? ''
+    // navigate to MyBookings with booking state (simulate confirmed booking)
+    navigate('/mybookings', {
+      state: {
+        movie: show.movie,
+        showId,
+        date: decodedDate,
+        time: selectedTime,
+        seats: selectedSeats,
+      },
+    })
+  }
+
   return (
     <div className='flex flex-col gap-8 px-6 py-30 md:flex-row md:px-16 md:pt-50 lg:px-40'>
       <div className='h-max w-60 rounded-lg border border-primary/20 bg-primary/10 py-10 md:sticky md:top-30'>
@@ -143,6 +159,19 @@ const SeatLayout = () => {
 
         <div className='w-full max-w-5xl rounded-3xl border border-white/10 bg-white/5 px-3 py-6 backdrop-blur-sm sm:px-6'>
           <div className='flex flex-col items-center gap-3'>{seatRows.map(renderSeatRow)}</div>
+        </div>
+
+        <div className='mt-4 w-full max-w-5xl flex items-center justify-between gap-4'>
+          <div className='text-sm text-gray-300'>
+            Selected seats: {selectedSeats.length > 0 ? selectedSeats.join(', ') : 'None'}
+          </div>
+          <button
+            onClick={handleProceed}
+            disabled={!selectedTime || selectedSeats.length === 0}
+            className={`px-4 py-2 rounded-full font-medium transition ${selectedTime && selectedSeats.length > 0 ? 'bg-primary text-black' : 'bg-white/6 text-white cursor-not-allowed'}`}
+          >
+            Proceed to Checkout
+          </button>
         </div>
       </div>
     </div>

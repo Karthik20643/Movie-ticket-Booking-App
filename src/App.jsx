@@ -5,6 +5,7 @@ import Home from './pages/Home'           // create or adjust path if needed
 import Movies from './pages/Movies'
 import MovieDetails from './pages/MovieDetails'
 import SeatLayout from './pages/SeatLayout'
+import Checkout from './pages/Checkout'
 import Favourite from './pages/Favourite'
 import MyBookings from './pages/MyBookings'
 import Footer from './components/Footer'
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/movies" element={<Movies />} />
         <Route path="/moviedetails/:id" element={<MovieDetails />} />
         <Route path="/seat/:id/:date" element={<SeatLayout />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
                         {  !isadminpage  &&  <Footer /> }
 
