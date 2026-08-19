@@ -23,7 +23,8 @@ const DateSelect = ({ dateTime = [], id, onSelect = () => {}, onBook = () => {} 
       return
     }
     const slug = typeof selected === 'object' ? (selected.date ?? selected.label) : String(selected)
-    navigate(`/movies/${id}/${encodeURIComponent(slug)}`)
+    // navigate to seat layout route for booking
+    navigate(`/seat/${id}/${encodeURIComponent(slug)}`)
     window.scrollTo(0, 0)
     onBook(selected)
   }

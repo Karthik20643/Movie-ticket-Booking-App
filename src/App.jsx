@@ -17,6 +17,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/movies" element={<Movies />} />
         <Route path="/moviedetails/:id" element={<MovieDetails />} />
+        <Route path="/seat/:id/:date" element={<SeatLayout />} />
       </Routes>
                         {  !isadminpage  &&  <Footer /> }
 

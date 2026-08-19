@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 import { assets, dummyDateTimeData, dummyShowsData } from '../assets/assets'
 import Loading from '../components/Loading'
 import BlurCircle from '../components/BlurCircle'
@@ -7,17 +7,20 @@ import { ClockIcon } from 'lucide-react'
 import isoTimeFormat from '../lib/isoTimeFormat'
 
 const seatRows = [
-  { label: 'A', sections: [2, 3, 2], width: '72%' },
-  { label: 'B', sections: [2, 3, 2], width: '76%' },
+  // Top rows: single centered block (A, B)
+  { label: 'A', sections: [9], width: '72%' },
+  { label: 'B', sections: [9], width: '76%' },
+  // Middle rows: left-center-right blocks
   { label: 'C', sections: [3, 4, 3], width: '82%' },
   { label: 'D', sections: [3, 4, 3], width: '86%' },
+  // Wider rows with larger center sections
   { label: 'E', sections: [4, 4, 4], width: '92%' },
   { label: 'F', sections: [4, 5, 4], width: '96%' },
   { label: 'G', sections: [4, 5, 4], width: '100%' },
   { label: 'H', sections: [4, 5, 4], width: '100%' },
 ]
 
-const seatBaseClass = 'h-8 w-8 rounded-lg border border-primary/60 text-xs transition cursor-pointer sm:h-9 sm:w-9'
+const seatBaseClass = 'h-8 w-8 rounded-md border border-primary/60 text-xs transition-all flex items-center justify-center cursor-pointer sm:h-9 sm:w-9'
 
 const SeatLayout = () => {
   const { id, date } = useParams()
@@ -26,9 +29,16 @@ const SeatLayout = () => {
   const [show, setShow] = useState(null)
 
   const getShow = async () => {
-    const foundShow = dummyShowsData.find((s) => s.id === id)
+    const paramId = String(id ?? '')
+    const foundShow = dummyShowsData.find((s) => String(s.id) === paramId || String(s._id) === paramId)
     if (foundShow) {
+      const decodedDate = date ? decodeURIComponent(date) : null
       setShow({ movie: foundShow, dateTime: dummyDateTimeData })
+      // preselect first timing for the given date if available
+      const timingsForDate = decodedDate ? (dummyDateTimeData[decodedDate] || []) : []
+      if (timingsForDate.length > 0) setSelectedTime(timingsForDate[0])
+    } else {
+      setShow(null)
     }
   }
 
@@ -82,11 +92,12 @@ const SeatLayout = () => {
 
   useEffect(() => {
     getShow()
-  }, [])
+  }, [id, date])
 
   if (!show) return <Loading />
 
-  const timings = show.dateTime?.[date] || []
+  const decodedDate = date ? decodeURIComponent(date) : null
+  const timings = decodedDate ? (show.dateTime?.[decodedDate] || []) : []
 
   return (
     <div className='flex flex-col gap-8 px-6 py-30 md:flex-row md:px-16 md:pt-50 lg:px-40'>
