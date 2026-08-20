@@ -1,21 +1,23 @@
 import React from 'react'
-import { Outlet, Link } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
+import AdminSidebar from '../../components/admin/AdminSidebar'
+import AdminNavbar from '../../components/admin/AdminNavbar'
 
 const AdminLayout = () => {
   return (
-    <div className="min-h-screen bg-slate-900 text-white p-6">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold">Admin</h1>
-        <nav className="mt-3 flex gap-3">
-          <Link to="/admin" className="text-sm text-gray-300">Dashboard</Link>
-          <Link to="add-shows" className="text-sm text-gray-300">Add Shows</Link>
-          <Link to="list-shows" className="text-sm text-gray-300">List Shows</Link>
-          <Link to="list-bookings" className="text-sm text-gray-300">List Bookings</Link>
-        </nav>
-      </header>
-      <main>
-        <Outlet />
-      </main>
+    <div className="min-h-screen bg-black text-white">
+      <div className="flex">
+        <aside className="w-64 bg-[#0f0f11] border-r border-white/6 min-h-screen">
+          <AdminSidebar />
+        </aside>
+
+        <div className="flex-1 min-h-screen flex flex-col">
+          <AdminNavbar />
+          <main className="p-6 flex-1 overflow-auto">
+            <Outlet />
+          </main>
+        </div>
+      </div>
     </div>
   )
 }
